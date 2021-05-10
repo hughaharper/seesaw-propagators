@@ -11,5 +11,5 @@ Digitized SSPs in various formats (.xy for gmt, kml)
 ## docs/
 Published work, explanations.
 
-## src/
+## projects/
 Programs, scripts, notebooks for processing, analysis, visualization
