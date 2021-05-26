@@ -1,0 +1,11 @@
+# GMT 5 Session common arguments shelf
+BEGIN GMT 5.4.5
+B	f5a10:Distance (km):/f0.5a1:Rel. elevation (km):nSeW
+J	X
+JX	X17c/4c
+JY	Y115/-50/7c
+R	-25/25/-0.2/2
+X	-10C
+Y	-5.5c
+L	295
+END
