@@ -1,9 +1,11 @@
 import numpy as np
+import netCDF4 as nc
 import math
 import pygmt
 import pandas as pd
 from scipy import integrate
 import os
+import glob
 
 def load_one_ridge(filename):
     ridge = pd.read_table(filename,skiprows=1,names=['lon','lat'],header=0)
@@ -15,6 +17,24 @@ def sample_ridge_on_grid(points,grid):
     gridtype = Ttype + dep
     z = pygmt.grdtrack(points,grid,newcolname=gridtype)
     return z
+
+def get_ridge_stresses_for_region(region,gridDir,depths):
+    filelist = glob.glob(myDir + "/segments/" + region + "/*.txt")
+    for oneFile in filelist:
+        ridgeDat = load_one_ridge(oneFile)
+        segName = os.path.basename(oneFile)
+        outFileName = myDir + '/segments/' + region + '/' + os.path.splitext(segName)[0] + '.csv'
+        if os.path.exists(outFileName):
+            print(outFileName + " exists")
+            continue
+        stresses = ['Txx','Tyy','Tzz','Txy','Txz','Tyz']
+        for depth in depths:
+            for stress in stresses:
+                gridFileName = gridDir + stress + '_' + str(depth) + '.nc'
+                print("Sampling " + gridFileName)
+                ridgeDat = sample_ridge_on_grid(ridgeDat,gridFileName)
+
+        ridgeDat.to_csv(outFileName)
 
 def get_avg_stress_tensor(stresses):
     cumStress = np.zeros((3,3))
@@ -87,3 +107,79 @@ def compute_K(x,p,H=7e3):
     K_b = integrate.simps(p/np.sqrt(a**2 - x**2),x=x)
     K = K_a*K_b
     return K
+
+def load_ridge_csv(filename):
+    ridgeData = pd.read_csv(filename,index_col=0)
+    return ridgeData
+
+def init_ridge_table(region):
+    csvDir = os.getcwd() + '/segments/' + region
+    ridgeList = glob.glob(csvDir + '/*.csv')
+    for ii,ridge in enumerate(ridgeList):
+        ridge = os.path.basename(ridge)
+        ridgeList[ii] = ridge[:-4]
+    ridgeList.sort()
+    n = len(ridgeList)
+    colLabels = ['lon','lat','strike','dep','migration','K']
+    allRidgeTable = pd.DataFrame(np.zeros((n,6)),index=ridgeList,columns=colLabels)
+    return allRidgeTable
+
+def get_ridge_table_values(ridgeData,fromIMG=True):
+    n = ridgeData.shape[0]
+    ridgeAzi = get_ridge_azimuth(ridgeData)
+    ridgeLoading = np.zeros((n,))
+    for ii in range(0,n):
+        onePoint = ridgeData.iloc[ii,:]
+        ridgeLoading[ii] = get_loading_stress(onePoint,ridgeAzi)
+    x = lonlat2x(ridgeData)
+    # Depending on what routine was used, a scale factor may be necessary
+    if (fromIMG):
+        ridgeLoading = ridgeLoading*10e6
+    K = compute_K(x,ridgeLoading)
+    return K, ridgeAzi
+
+def get_table_for_region(region,fromIMG=True):
+    myTable = init_ridge_table(region)
+
+    for ii,ridge in enumerate(myTable.index):
+        ridgeFile = os.getcwd() + '/segments/' + region + '/' + ridge + '.csv'
+        ridgeStressData = load_ridge_csv(ridgeFile)
+        myTable.iloc[ii,-1], myTable.iloc[ii,2] = get_ridge_table_values(ridgeStressData,fromIMG)
+    return myTable
+
+def write_GMT_netcdf(filename,lons,lats,data):
+    nlo = len(lons)
+    nla = len(lats)
+    f = nc.Dataset(filename,'w',format='NETCDF4')
+    f.createDimension('lon',nlo)
+    f.createDimension('lat',nla)
+    lon = f.createVariable('lon','f8',('lon',))
+    lon.long_name = 'longitude'
+    lon.units = 'degrees_east'
+    lon.standard_name = 'longitude'
+    lon.axis = 'X'
+    lon.actual_range = [lons.min(), lons.max()]
+    lat = f.createVariable('lat','f8',('lat',))
+    lat.long_name = 'latitude'
+    lat.units = 'degrees_north'
+    lat.standard_name = 'latitude'
+    lat.axis = 'Y'
+    lat.actual_range = [lats.min(), lats.max()]
+    z = f.createVariable('z','f4',('lat','lon'))
+    z.long_name = 'z'
+    z.actual_range = [data.min(), data.max()]
+    lat[:] = lats
+    lon[:] = lons
+    z[:,:] = data.astype('float32')
+    f.close()
+    return
+
+def read_GMT_netcdf(filename):
+    f = nc.Dataset(filename,'r',format='NETCDF4')
+    lon = f.variables['lon']
+    lat = f.variables['lat']
+    data = f.variables['z']
+    my_lon = lon[:].copy()
+    my_lat = lat[:].copy()
+    my_data = data[:,:].copy()
+    return my_lon, my_lat, my_data
