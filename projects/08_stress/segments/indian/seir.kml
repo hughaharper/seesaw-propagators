@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>seir.kml</name>
+	<StyleMap id="m_ylw-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin2</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl0">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin2">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin_hl">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Folder>
+		<name>seir</name>
+		<visibility>0</visibility>
+		<Placemark>
+			<name>125E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					124.5069578755428,-48.92371192016711,0 124.7645344069382,-49.01814193693195,0 125.1956536842667,-49.13797037352338,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>125E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					125.8721806679512,-49.88081047863923,0 125.579342353414,-49.80276602265219,0 125.213850161307,-49.59958812181854,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>122E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					121.5760514084169,-49.72283369722685,0 122.5317585126463,-49.88543911562774,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>122E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					123.2565635742163,-49.55140447923779,0 122.9073485706241,-49.52842186904902,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>115E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					115.9585284545709,-49.98760390654156,0 115.6757512172153,-49.93526515479299,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>115E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					114.459632344564,-49.86259133751032,0 115.4675242962236,-50.05540958362712,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>112E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					112.8089696370046,-50.20587919413346,0 113.4955919588528,-50.40845479561304,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>112E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					112.5790850965315,-50.37933771832076,0 111.414565742975,-50.09177386009691,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>111E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					110.8429156737914,-49.95416585511579,0 110.0108318171482,-49.716655751928,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>111E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					111.3472821999958,-49.84663305059433,0 110.9743857288918,-49.7608155094986,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>108E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					108.6576858570267,-49.27303786485556,0 109.4239932477912,-49.55551501636196,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>108E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					108.4776602835815,-49.00701269853457,0 108.7049433252075,-49.09171409115259,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>104E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					104.9640846684861,-48.76451004232241,0 104.1847151648559,-48.4724106932614,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>104E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					102.8757816676974,-47.74065749088039,0 104.2369955059138,-48.18450678477617,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>102E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					102.5250848911911,-48.0151128721953,0 101.6123919699931,-47.65327781661166,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>102E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					102.8808614997777,-47.73947755918537,0 104.2455301800106,-48.18434485193857,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>96E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin0</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					96.45083904753014,-45.32100464239397,0 95.78361107285228,-45.04467353995355,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>96E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin0</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					95.69050205375028,-45.16642144068941,0 94.89672521186347,-44.77959398142105,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>78E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					78.39344800810871,-35.59011139999583,0 79.07017456376616,-36.27169587939932,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>78E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					77.80810202658702,-34.12622076366727,0 78.726760095687,-35.04385670950877,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>75E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					74.66090906349723,-28.83730753143925,0 75.11668788169925,-29.42676538900476,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>75E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					74.97026442250275,-29.62949979367874,0 75.18220366710551,-29.87287792878529,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>74E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					73.97115290810981,-27.8275166883663,0 74.44351035077594,-28.24435553677705,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>74E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					74.22635265060552,-28.50516510525356,0 74.59831259722692,-28.84085085776454,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>73E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					73.88536951156323,-27.82056803592326,0 73.54067832382817,-27.44009584679171,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>73E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					73.29294192214951,-27.49511939749855,0 73.16696976630882,-27.35261305676186,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>71E-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					72.30479545759519,-26.94838623062849,0 71.79780792840585,-26.34198470281343,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>71E-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					71.3330944666705,-26.01703149649554,0 71.63430040193327,-26.37077341552445,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>22S-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					69.149429916738,-22.2901786931259,0 69.40280009291558,-22.65854519767199,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>22S-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					68.95749284962689,-21.68352079791134,0 69.21486363767771,-22.13820605713909,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>21S-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					68.13183377053893,-20.46086837363955,0 68.3802636724544,-20.85097520693346,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>21S-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					68.53804862940909,-20.80488077208144,0 68.7050380233656,-21.08251630155873,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>15S-PR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					67.17339274559698,-15.59726117106182,0 67.36809964564245,-15.98886134762454,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+		<Placemark>
+			<name>15S-FR</name>
+			<visibility>0</visibility>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					66.79652280345705,-14.86155955668816,0 67.27516767636585,-15.45541133167675,0 
+				</coordinates>
+			</LineString>
+		</Placemark>
+	</Folder>
+</Document>
+</kml>
