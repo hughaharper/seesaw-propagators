@@ -7,6 +7,20 @@ from scipy import integrate
 import os
 import glob
 
+
+class Ridge(object):
+    
+    def __init__(self):
+        
+
+class RidgePair(Ridge):
+    
+    def __init__(self):
+
+        
+#--------------------------------------------------------------------------
+#--------------------------------------------------------------------------
+
 def load_one_ridge(filename):
     ridge = pd.read_table(filename,skiprows=1,names=['lon','lat'],header=0)
     return ridge
