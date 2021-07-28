@@ -41,6 +41,22 @@ def write_GMT_netcdf(filename,lons,lats,data):
     f.close()
     return
 
+def compute_window(grid):
+    ni = grid.shape[0]
+    nj = grid.shape[1]
+    nsigy = ni/8
+    nsigx = nj/8
+    yidx = np.linspace(1,ni,ni)
+    xidx = np.linspace(1,nj,nj)
+    ywind = np.ones_like(yidx)
+    xwind = np.ones_like(xidx)
+    ywind[yidx < nsigy] = 0.5*(1-np.cos(pi*(yidx[yidx < nsigy] - 1)/nsigy))
+    ywind[yidx > (ni-nsigy)] = 0.5*(1-np.cos(pi*(ni - yidx[yidx > (ni-nsigy)])/nsigy))
+    xwind[xidx < nsigx] = 0.5*(1-np.cos(pi*(xidx[xidx < nsigx] - 1)/nsigx))
+    xwind[xidx > (nj-nsigx)] = 0.5*(1-np.cos(pi*(nj - xidx[xidx > (nj-nsigx)])/nsigx))
+    window = np.outer(ywind,xwind)
+    return window
+
 def fft_grd(to_fft, inv=False):
     if inv==True:
         out = ifft2(ifftshift(to_fft))
@@ -175,8 +191,11 @@ def topo_stress(infile, zobs, H=7, Te=0, rhoc=2900):
     
     lon, lat, topo = read_GMT_netcdf(infile)
     
+    ni = topo.shape[0]
+    nj = topo.shape[1]
     
-    load = topo*grv*rhoc
+    window = compute_window(topo)
+    load = topo*grv*rhoc*window/(ni*nj)
     
     load_k, kx, ky = fft_grd(load)
     kX, kY = np.meshgrid(kx,ky)
