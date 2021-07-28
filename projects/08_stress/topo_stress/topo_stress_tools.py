@@ -59,12 +59,10 @@ def compute_window(grid):
 
 def fft_grd(to_fft, inv=False):
     if inv==True:
-        out = ifft2(ifftshift(to_fft))
+        out = ifft2(to_fft)
     else:
-        out = fftshift(fft2(to_fft))
-    kx = fftshift(fftfreq(to_fft.shape[0]))
-    ky = fftshift(fftfreq(to_fft.shape[-1]))
-    return out, kx, ky
+        out = fft2(to_fft)
+    return out
 
 def moho_topo(kx,ky,Te,rhoc,rhom,fk,young,rnu):
     grv = 9.81
@@ -192,25 +190,41 @@ def topo_stress(infile, zobs, H=7, Te=0, rhoc=2900):
     lon, lat, topo = read_GMT_netcdf(infile)
     
     ni = topo.shape[0]
+    ni2 = ni/2+1
     nj = topo.shape[1]
+    nj2 = nj/2+1
     
     window = compute_window(topo)
     load = topo*grv*rhoc*window/(ni*nj)
     
-    load_k, kx, ky = fft_grd(load)
+    load_k = fft_grd(load)
+    dln = np.abs(lon[-1] - lon[0])/nj
+    dlt = np.abs(lat[-1] - lat[0])/ni
+    rlat2 = np.abs(lat[0]+ni*dlt/2)*pi/180
+    xscl = np.cos(rlat2)
+    dx = xscl*111000*dln
+    dy = 111000*dlt
+    width = nj*dx
+    height = np.abs(ni*dy)
+    ky_idx = np.linspace(1,ni,ni)
+    ky = -1*np.linspace(0,ni-1,ni)/height
+    ky[ky_idx >= ni2] = (ni - ky_idx[ky_idx >= ni2] + 1)/height
+    kx_idx = np.linspace(1,nj,nj)
+    kx = -1*np.linspace(0,nj-1,nj)/width
+    kx[kx_idx >= nj2] = (nj - kx_idx[kx_idx >= nj2] + 1)/width
     kX, kY = np.meshgrid(kx,ky)
+    
     g_k = moho_topo(kX,kY,Te,rhoc,rhom,load_k,young,rnu)
     cub, cvb, cwb, cdwdz, cdudz, cdvdz = airy2load(kX,kY,zobs,H,load_k,g_k,rlam1,rmu1)
     cTxx, cTyy, cTzz, cTxy, cTxz, cTyz = disp2stress(kX,kY,cub,cvb,cwb,cdudz,cdvdz,cdwdz,rlam1,rmu1)
     
-    Txx,_,_ = fft_grd(cTxx,inv=True)
-    Tyy,_,_ = fft_grd(cTyy,inv=True)
-    Tzz,_,_ = fft_grd(cTzz,inv=True)
-    Txy,_,_ = fft_grd(cTxy,inv=True)
-    Txz,_,_ = fft_grd(cTxz,inv=True)
-    Tyz,_,_ = fft_grd(cTyz,inv=True)
+    Txx = fft_grd(cTxx,inv=True)
+    Tyy = fft_grd(cTyy,inv=True)
+    Tzz = fft_grd(cTzz,inv=True)
+    Txy = fft_grd(cTxy,inv=True)
+    Txz = fft_grd(cTxz,inv=True)
+    Tyz = fft_grd(cTyz,inv=True)
     
-    write_GMT_netcdf('Txx-temp.nc',lon,lat,Txx.real)
     return Txx, Tyy, Tzz, Txy, Txz, Tyz
 
 if __name__ == '__main__':
