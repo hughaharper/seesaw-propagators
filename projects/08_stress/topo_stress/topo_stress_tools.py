@@ -213,7 +213,7 @@ def topo_stress(infile, zobs, H=7, Te=0, rhoc=2900):
     kx_idx = np.linspace(1,nj,nj)
     kx = -1*np.linspace(0,nj-1,nj)/width
     kx[kx_idx >= nj2] = (nj - kx_idx[kx_idx >= nj2] + 1)/width
-    kY, kX = np.meshgrid(ky,kx)
+    kX, kY = np.meshgrid(kx,ky)
     
     g_k = moho_topo(kX,kY,Te,rhoc,rhom,load_k,young,rnu)
     cub, cvb, cwb, cdwdz, cdudz, cdvdz = airy2load(kX,kY,zobs,H,load_k,g_k,rlam1,rmu1)
