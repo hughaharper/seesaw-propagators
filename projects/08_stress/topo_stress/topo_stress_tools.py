@@ -146,6 +146,7 @@ def airy2load(kx,ky,zobs,H,fk,gk,rlam1,rmu1):
     cvb[beta == 0] = 0
     cwb[beta == 0] = 0
     cdwdz[beta == 0] = 0
+    cdudz[beta == 0] = 0
     cdvdz[beta == 0] = 0
     
     return cub, cvb, cwb, cdwdz, cdudz, cdvdz
