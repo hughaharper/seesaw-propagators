@@ -196,7 +196,7 @@ def topo_stress(infile, zobs, H=7, Te=0, rhoc=2900):
     nj2 = int(nj/2+1)
     
     window = compute_window(topo)
-    load = topo*grv*rhoc*window/(ni*nj)
+    load = topo*grv*rhoc*window
     
     load_k = fft_grd(load)
     dln = np.abs(lon[-1] - lon[0])/nj
