@@ -142,12 +142,12 @@ def airy2load(kx,ky,zobs,H,fk,gk,rlam1,rmu1):
     cdwdz = (-beta**3*arg3.real + 1j*(-beta**3*arg3.imag))
     cdudz = (2*pi*kx*alpha*arg4.imag + 1j*(-2*pi*kx*alpha*arg4.real))
     cdvdz = (2*pi*ky*alpha*arg4.imag + 1j*(-2*pi*ky*alpha*arg4.real))
-    cub[beta == 0] = 0
-    cvb[beta == 0] = 0
-    cwb[beta == 0] = 0
-    cdwdz[beta == 0] = 0
-    cdudz[beta == 0] = 0
-    cdvdz[beta == 0] = 0
+    cub[beta == 0] = (0 + 1j*0)
+    cvb[beta == 0] = (0 + 1j*0)
+    cwb[beta == 0] = (0 + 1j*0)
+    cdwdz[beta == 0] = (0 + 1j*0)
+    cdudz[beta == 0] = (0 + 1j*0)
+    cdvdz[beta == 0] = (0 + 1j*0)
     
     return cub, cvb, cwb, cdwdz, cdudz, cdvdz
 
@@ -191,9 +191,9 @@ def topo_stress(infile, zobs, H=7, Te=0, rhoc=2900):
     lon, lat, topo = read_GMT_netcdf(infile)
     
     ni = topo.shape[0]
-    ni2 = ni/2+1
+    ni2 = int(ni/2+1)
     nj = topo.shape[1]
-    nj2 = nj/2+1
+    nj2 = int(nj/2+1)
     
     window = compute_window(topo)
     load = topo*grv*rhoc*window/(ni*nj)
@@ -207,12 +207,16 @@ def topo_stress(infile, zobs, H=7, Te=0, rhoc=2900):
     dy = 111000*dlt
     width = nj*dx
     height = np.abs(ni*dy)
-    ky_idx = np.linspace(1,ni,ni)
-    ky = -1*np.linspace(0,ni-1,ni)/height
-    ky[ky_idx >= ni2] = (ni - ky_idx[ky_idx >= ni2] + 1)/height
-    kx_idx = np.linspace(1,nj,nj)
-    kx = -1*np.linspace(0,nj-1,nj)/width
-    kx[kx_idx >= nj2] = (nj - kx_idx[kx_idx >= nj2] + 1)/width
+    
+    ky_idx = np.linspace(1,ni2-1,ni2-1)
+    kyP = (ni2 - 1 - np.flip(ky_idx))/height
+    kyM = -1*np.linspace(1,ni2-1,ni2-1)/height
+    ky = np.concatenate((kyP,np.flip(kyM)))
+    
+    kx_idx = np.linspace(1,nj2-1,nj2-1)
+    kxP = (nj2 - 1 - np.flip(kx_idx))/width
+    kxM = -1*np.linspace(1,nj2-1,nj2-1)/width
+    kx = np.concatenate((kxP,np.flip(kxM)))
     kX, kY = np.meshgrid(kx,ky)
     
     g_k = moho_topo(kX,kY,Te,rhoc,rhom,load_k,young,rnu)
