@@ -41,6 +41,16 @@ def write_GMT_netcdf(filename,lons,lats,data):
     f.close()
     return
 
+def eq_rock(topo_grid,rhoc=2900):
+    rhom = 3300
+    rhow = 1025
+    
+    feqrk = (rhoc-rhow)/rhoc
+    
+    eqrk_grid = topo_grid*feqrk
+    
+    return eqrk_grid
+
 def compute_window(grid):
     ni = grid.shape[0]
     nj = grid.shape[1]
