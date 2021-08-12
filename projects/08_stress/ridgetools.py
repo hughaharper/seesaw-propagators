@@ -8,14 +8,14 @@ import os
 import glob
 
 
-class Ridge(object):
+#class Ridge(object):
     
-    def __init__(self):
+#    def __init__(self):
         
 
-class RidgePair(Ridge):
+#class RidgePair(Ridge):
     
-    def __init__(self):
+#    def __init__(self):
 
         
 #--------------------------------------------------------------------------
