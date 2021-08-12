@@ -41,6 +41,9 @@ def write_GMT_netcdf(filename,lons,lats,data):
     f.close()
     return
 
+def land_mask(lats,lons):
+    return is_ocean
+
 def eq_rock(topo_grid,rhoc=2900):
     rhom = 3300
     rhow = 1025
@@ -50,6 +53,13 @@ def eq_rock(topo_grid,rhoc=2900):
     eqrk_grid = topo_grid*feqrk
     
     return eqrk_grid
+
+def fill_nans(in_grid):
+    ind = np.where(~np.isnan(in_grid))[0]
+    first, last = ind[0], ind[-1]
+    in_grid[:first] = in_grid[first]
+    in_grid[last + 1:] = in_grid[last]
+    return in_grid
 
 def compute_window(grid):
     ni = grid.shape[0]
@@ -199,6 +209,17 @@ def topo_stress(infile, zobs, H=7, Te=0, rhoc=2900):
     zobs = -abs(zobs*1000)
     
     lon, lat, topo = read_GMT_netcdf(infile)
+    if np.ma.is_masked(topo):
+        topo = np.nan_to_num(topo.data)
+    else:
+        topo = np.nan_to_num(topo)
+    
+    if (topo.shape[0] % 2) != 0:
+        topo = topo[:-1,:]
+        lat = lat[:-1]
+    if (topo.shape[1] % 2) != 0:
+        topo = topo[:,:-1]
+        lon = lon[:-1]
     
     ni = topo.shape[0]
     ni2 = int(ni/2+1)
@@ -240,7 +261,7 @@ def topo_stress(infile, zobs, H=7, Te=0, rhoc=2900):
     Txz = fft_grd(cTxz,inv=True)
     Tyz = fft_grd(cTyz,inv=True)
     
-    return Txx, Tyy, Tzz, Txy, Txz, Tyz
+    return Txx, Tyy, Tzz, Txy, Txz, Tyz, lon, lat
 
 if __name__ == '__main__':
     print('testing...')
