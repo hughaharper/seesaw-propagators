@@ -1,24 +1,45 @@
 \documentclass{article}
 
+\usepackage{fullpage}
 \usepackage{amsmath}
 \author{Hugh Harper}
-\title{Stress intensity at propagating ridges}
+\title{States of stress at propagating ridges}
 
 \begin{document}
 \maketitle
 \section{See-saw Propagating Ridges}
+Brief description of SSPs. What we tested in the last paper that didn't work.
 
 \section{Stress Intensity Factor}
-We evaluate the stress state at propagating ridges by idealizing the ridge as a mode 1 fracture and computing a stress intensity factor. For a finite crack of length $a$ in a plate of thickness $H$, the mode 1 stress intensity factor $K_I$ is:
+We evaluate the stress state at propagating ridges by idealizing the ridge as a mode I fracture and computing a stress intensity factor. For a finite crack of length $a$ in a plate of thickness $H$, the mode I stress intensity factor $K_I$ is:
 \begin{equation}
 	K_I = \frac{2}{H}\left(\frac{a}{\pi}\right)^{1/2}\int_a \frac{p\left(x\right)}{\left(a^2 - x^2 \right)^{1/2}}\, dx
 \end{equation}
-where $p(x)$ is the loading function along the length of the crack.
+where $p(x)$ is the loading function along the length of the crack. For a propagating ridge segment, the stress intensity factor should exceed the stress intensity factor of the adjacent retreating ridge segment. The inequality in $K_I$ between adjacent ridge segments isn't alone sufficient for propagation, but it is necessary. As noted by Phipps Morgan and Parmentier, the $K_I$ inequality is a restatement of whether a ridge-transform-ridge plate boundary is unstable.
 
 \subsection{Previous Approaches}
-In Phipps Morgan and Parmentier (1985), the loading function $p(x)$ is a simple function of topography along the ridge axis.
+In Phipps Morgan and Parmentier (1985), the loading function $p(x)$ is a function of topography along the ridge axis obtained by a simple force balance: $p(x) = (\rho_l - \rho_w)g\delta H/2 $. There is an ambiguity in choosing a reference height above which $p(x)$ is positive. An approach for an axial high ridge will not work for an axial low type ridge. West et al. (1999) used a similar formulation, and they chose the reference as the ridge tip.
+
+We compute a loading function based on the integrated stresses normal to a propagating ridge which should produce values similar to previous approaches. Some explanation of the stress is required. We aren't concerned with the longest wavelength stresses that drive plate motion, and we assume such stresses do not vary between adjacent ridge segments. The stress state within the crust is the minimum deviatoric stress necessary to support the load of the topography.
 
 \subsection{Computing Stress}
+To compute the stress state in the oceanic crust, we follow the approach of Luttrell and Sandwell (2012) which we will describe here.
 
+We compute stress for a given region by first calculating a vertical load on the crust, $f(x,y,z=0)$ equivalent to excess topography. Then for a fixed crustal thickness and effective elastic thickness, we compute a load on the ``moho'', $g(x,y,z=h)$ required to balance the surface load (for airy isostasy, $f=g$). Then, we compute the Greens functions for the elastic response of the crust from which we can compute the state of stress in the plate.
+
+The stress computation is sensitive to the longest wavelengths used from the applied load. We high-pass filter the load by spherical harmonic number. When selecting a subregion for the stress computation, the longest wavelength of the filtered load should be smaller than the region. The load may be arbitrarily complex, but the zero-wave-number component must be zero (zero mean).
+
+We must also choose an appropriate elastic thickness, density, Poisson's ratio, and Lame parameters for a given region.
+
+\subsection{Benchmarking against previous approaches}
+We first tested the results of this alternative approach against results from previous studies. Some amount of tuning is involved. For a testing region, we will use the Galapagos Ridge PR.
+\begin{itemize}
+	\item Filtering surface load
+	\begin{itemize}
+		\item Stress grids
+		\item Loading profiles
+	\end{itemize}
+	\item Elastic thickness, density
+\end{itemize}
 
 \end{document}
