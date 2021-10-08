@@ -115,9 +115,12 @@ def lonlat2x(ridgeData):
     return x
 
 def compute_K(x,p,H=7e3):
-    a = (x[-1] - x[0]) + 1
-    K_a = (2/H)*math.sqrt(a/math.pi)
-    K_b = integrate.simps(p/np.sqrt(a**2 - x**2),x=x)
+    a = (x[-1] - x[0])/2 # the length of the crack is 2a
+    x_t = x - a
+    x_t[0] = x_t[0] + 1
+    x_t[-1] = x_t[-1] - 1 # +/- 1 is to avoid divide by zero in integration
+    K_a = 1/(H*math.sqrt(a*math.pi))
+    K_b = integrate.simps(p*np.sqrt((a + x_t)/(a - x_t)),x_t)
     K = K_a*K_b
     return K
 
@@ -209,34 +212,31 @@ def gmt_gridplot(region,gridfile):
     return fig
 
 def plot_stress_grids(depth,grid_dir):
-    grids = ['Txx','Tyy','Tzz','Txy','Txz','Tyz']
+    grids = ['Txx','Tyy','Txy']
     fig = pygmt.Figure()
-    pygmt.config(FORMAT_GEO_MAP="ddd.xx")
+    pygmt.config(FORMAT_GEO_MAP="D")
     pygmt.config(MAP_FRAME_TYPE="plain")
     with fig.subplot(
-        nrows=2,ncols=3,
-        figsize=('20c','10c'),
-        margins=['1c','1c'],
-        frame=['WSne',"xa4f2","ya4f2"]
+        nrows=1,ncols=3,
+        figsize=(50,50),
+        frame=['WSne',"xa4f2","ya4f2"],
+        sharey=True
     ):
-        for i in range(2):
-            for j in range(3):
-                index = i * 3 + j
-                with fig.set_panel(panel=index):
-                    if index < 2:
-                        pygmt.makecpt(cmap='jet',series=[-10e6,10e6])
-                    elif index == 2:
-                        pygmt.makecpt(cmap='jet',series=[-30e6,30e6])
-                    else:
-                        pygmt.makecpt(cmap='jet',series=[-5e6,5e6])
-                    fig.grdimage(
-                        grid='{}{}.{}.nc'.format(grid_dir,grids[index],
-                        str(depth)),
-                        projection='M?'
-                    )
-                    fig.colorbar(
-                        position='+e',
-                        frame=['x+l{}'.format(grids[index]),'y+lMPa'],
-                        scale=1e-6
-                    )
+        for index in range(3):
+            with fig.set_panel(panel=index):
+                if index < 2:
+                    pygmt.makecpt(cmap='jet',series=[-10e6,10e6])
+                else:
+                    pygmt.makecpt(cmap='jet',series=[-5e6,5e6])
+                fig.grdimage(
+                    grid='{}{}.{}.nc'.format(grid_dir,grids[index],
+                    str(depth)),
+                    projection='M?',
+                    region=[-98, -86, -3, 7]
+                )
+                fig.colorbar(
+                    position='+e',
+                    frame=['x+l{}'.format(grids[index]),'y+lMPa'],
+                    scale=1e-6
+                )
     return fig
