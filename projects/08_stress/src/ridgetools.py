@@ -211,7 +211,7 @@ def gmt_gridplot(region,gridfile):
     fig.coast(land="#666666")
     return fig
 
-def plot_stress_grids(depth,grid_dir):
+def plot_stress_grids(depth,grid_dir,my_region):
     grids = ['Txx','Tyy','Txy']
     fig = pygmt.Figure()
     pygmt.config(FORMAT_GEO_MAP="D")
@@ -232,7 +232,7 @@ def plot_stress_grids(depth,grid_dir):
                     grid='{}{}.{}.nc'.format(grid_dir,grids[index],
                     str(depth)),
                     projection='M?',
-                    region=[-98, -86, -3, 7]
+                    region=my_region
                 )
                 fig.colorbar(
                     position='+e',
