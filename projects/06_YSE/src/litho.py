@@ -1,6 +1,11 @@
 import numpy as np
 
-class litho(object):
+SPMYR = 3.15576e13
+GBAR = 9.81
+PI = np.pi
+PI2 = PI**2
+
+class Litho(object):
     
     def __init__(self, **kwargs):
         '''
@@ -12,10 +17,9 @@ class litho(object):
         self.diff = 8.0e-7 # thermal diffusivity
         self.cp = 1172.0 # heat capac.
         self.dp = 1.25e5 # plate thickness
-        self.usp = 4 # FULL spr. rate (cm / yr)
+        self.usp = 0.04 # FULL spr. rate (m / yr)
         
         # param. for thermal subsidence, sed. loading
-        self.gbar = 9.81 # grav. accel.
         self.dref = 2600.0 # ridge crest depth
         self.alph = 3.2e-5 # vol. expansion coeff
         self.rw = 1025 # water density
@@ -44,7 +48,7 @@ class litho(object):
         self.pois = 0.25 # poisson's ratio
         self.telas = 600 # temp at base of elastic layer
         
-        # param. forductile flow law
+        # param. for ductile flow law
         self.eps1 = 1.e-14 # strain rate
         self.str_exp = 3.0 # stress exponent
         self.str_pow = 7.0e-14 # stress amplitude factor for power law
@@ -54,9 +58,7 @@ class litho(object):
         self.qd = 5.49e5 # activation energy for Dorn law
         
         # depth-related params
-        self.zmt = -1.0 # mechanical thickness based on duct. str
-        self.zn = -1.0 # depth of nodal plane
-        self.zy = 1000 # depth to top of elastic layer
+        self.z = np.linspace(0,2.5e4,1000,endpoint=False) # z coordinates
         return
     
     def print_vals(self):
@@ -66,7 +68,7 @@ class litho(object):
         print("Litho defaults: \n")
         return
     
-    def depth_sflr(self, age):
+    def get_depth_sflr(self, age):
         '''
         Compute seafloor depth given a plate age
         '''
@@ -75,16 +77,51 @@ class litho(object):
             * (self.tm - self.ts)/(self.rm - self.rw)
         ii = np.arange(0,50)
         jj = (2*ii + 1)*(2*ii + 1)
-        argex = (self.diff*jj*(np.pi**2)*tage)/(self.dp**2)
-        term = np.exp(-1.0*argex)
+        argex = (self.diff*jj*PI2*tage)/(self.dp**2)
+        term = np.exp(-1.0*argex) / jj
         tsum = np.sum(term)
-        depth = self.dref + pref*(0.5 - 4.0*tsum/(np.pi**2))
+        depth = self.dref + pref*(0.5 - 4.0*tsum/PI2)
         return depth
+    
+    def get_obp(self, dsflr):
+        '''
+        Compute overburden pressure profile given
+        depth of the seafloor
+        '''
+        # water column overburden
+        pw = (dsflr + self.dref)*self.rw*GBAR
+        press = (self.z*self.rc*GBAR) - \
+            (self.phyd*self.rw*GBAR)*(self.z + dsflr + self.dref)
+        return ps + press
+    
+    def get_temperature(self,age):
+        '''
+        Compute vertical temperature profile given
+        age and a cooling model
+        '''
+        
+        return
+    
+    def get_ductile(self,temp):
+        '''
+        Get vertical ductile strength profile
+        '''
+        return
+    
+    def get_byerlee(self,pressure):
+        '''
+        Get vertical brittle strength profile
+        '''
+        return
     
     def get_yse(self, age, **kwargs):
         '''
         Compute a yield strength envelope
         given a plate age
         '''
-        dsf = depth_sflr(
+        dsf = self.get_depth_sflr(age)
+        obp = self.get_obp(dsf)
+        temp = self.get_temperature(age)
+        dustr = self.get_ductile(temp)
+        bystr = self.get_byerlee(obp)
         return
