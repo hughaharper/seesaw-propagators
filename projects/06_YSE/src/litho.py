@@ -41,7 +41,7 @@ class Litho(object):
         self.byerlpsh = 0.85 # shear, byerlee coef for pressure term, stress < 200 MPa
         self.byergcsh = 0.5 # shear, byerlee val for cohesion, stress > 200 MPa
         self.byergpsh = 0.6 # shear, byerlee coef for pressure, stress > 200 MPa
-        self.phyd = 1.0 # pore pressure level
+        self.phyd = 0.0 # pore pressure level
         
         # elastic params
         self.young = 6.5e10 # young's modulus
@@ -71,6 +71,7 @@ class Litho(object):
     def get_depth_sflr(self, age):
         '''
         Compute seafloor depth given a plate age
+        See T&S (3rd ed.) eq 4.211
         '''
         tage = age*SPMYR
         pref = self.rm * self.alph * self.dp \
@@ -89,10 +90,10 @@ class Litho(object):
         depth of the seafloor
         '''
         # water column overburden
-        pw = (dsflr + self.dref)*self.rw*GBAR
+        pw = dsflr*self.rw*GBAR
         press = (self.z*self.rc*GBAR) - \
-            (self.phyd*self.rw*GBAR)*(self.z + dsflr + self.dref)
-        return ps + press
+            (self.phyd*self.rw*GBAR)*(self.z + dsflr)
+        return pw + press
     
     def get_temperature(self,age):
         '''
