@@ -1,6 +1,8 @@
+import numpy as np
+
 class litho(object):
     
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         '''
         Set Litho Defaults
         '''
@@ -64,9 +66,25 @@ class litho(object):
         print("Litho defaults: \n")
         return
     
-    def get_yse(self,age):
+    def depth_sflr(self, age):
+        '''
+        Compute seafloor depth given a plate age
+        '''
+        tage = age*SPMYR
+        pref = self.rm * self.alph * self.dp \
+            * (self.tm - self.ts)/(self.rm - self.rw)
+        ii = np.arange(0,50)
+        jj = (2*ii + 1)*(2*ii + 1)
+        argex = (self.diff*jj*(np.pi**2)*tage)/(self.dp**2)
+        term = np.exp(-1.0*argex)
+        tsum = np.sum(term)
+        depth = self.dref + pref*(0.5 - 4.0*tsum/(np.pi**2))
+        return depth
+    
+    def get_yse(self, age, **kwargs):
         '''
         Compute a yield strength envelope
         given a plate age
         '''
+        dsf = depth_sflr(
         return
