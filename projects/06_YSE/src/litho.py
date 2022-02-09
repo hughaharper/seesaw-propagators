@@ -99,9 +99,16 @@ class Litho(object):
         '''
         Compute vertical temperature profile given
         age and a cooling model
+        See T&S (3rd ed.) eq 4.130 for Plate Cooling
         '''
-        
-        return
+        tage = age*SPMYR
+        jj = np.arange(1,51)
+        argex = self.diff*jj*jj*PI2*tage/(self.dp**2)
+        argsin = self.z[:,np.newaxis]*jj*PI/self.dp
+        term = np.exp(-1.0*argex)*np.sin(argsin)/jj
+        tsum = np.sum(term,axis=1)
+        temp = self.ts + (self.tm - self.ts)*((self.z/self.dp) + (2.0*tsum/PI))
+        return temp
     
     def get_ductile(self,temp):
         '''
