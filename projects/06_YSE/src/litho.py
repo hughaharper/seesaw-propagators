@@ -64,6 +64,7 @@ class Litho(object):
         
         # set any kwargs
         for key, value in kwargs.items():
+            # should verify that the key is an attribute
             self.__setattr__(key,value)
         return
     
@@ -71,7 +72,7 @@ class Litho(object):
         '''
         Print litho parameter values
         '''
-        print("Litho defaults: \n")
+        print("Litho params: \n")
         return
     
     def get_depth_sflr(self, age):
@@ -101,19 +102,53 @@ class Litho(object):
             (self.phyd*self.rw*GBAR)*(self.z + dsflr)
         return pw + press
     
-    def get_temperature(self,age):
+    def get_temperature(self,age,model=1):
         '''
         Compute vertical temperature profile given
-        age and a cooling model
-        See T&S (3rd ed.) eq 4.130 for Plate Cooling
+        age and a cooling model.
+        0 = half space,
+        1 = Plate, See T&S (3rd ed.) eq 4.130
+        2 = Sleep (1975)
         '''
         tage = age*SPMYR
-        jj = np.arange(1,51)
-        argex = self.diff*jj*jj*PI2*tage/(self.dp**2)
-        argsin = self.z[:,np.newaxis]*jj*PI/self.dp # broadcasts z and jj
-        term = np.exp(-1.0*argex)*np.sin(argsin)/jj
-        tsum = np.sum(term,axis=1)
-        temp = self.ts + (self.tm - self.ts)*((self.z/self.dp) + (2.0*tsum/PI))
+        if model == 1:
+            jj = np.arange(1,51)
+            argex = self.diff*jj*jj*PI2*tage/(self.dp**2)
+            argsin = self.z[:,np.newaxis]*jj*PI/self.dp # broadcasts z and jj
+            term = np.exp(-1.0*argex)*np.sin(argsin)/jj
+            tsum = np.sum(term,axis=1)
+            temp = self.ts + (self.tm - self.ts)*((self.z/self.dp) + (2.0*tsum/PI))
+        elif model == 2:
+            tu = self.usp/365/24/60/60 # m/yr to m/s
+            x = tu*tage
+            z_seg = 33.0e3
+            latent_h = 1.028e9
+            l_adiab = 1.0e-3
+            d_adiab = 0.3e-3
+            melt_grad = 3.0e-3
+            conduct = 2.5104
+            rhoc = conduct/self.diff
+            gamma = 1 - (d_adiab*self.dp)/self.tm
+            T_c = self.tm*(gamma - ((gamma*self.dc)/self.dp) + (self.dc/self.dp))
+            T_seg = self.tm*(gamma - ((gamma*z_seg)/self.dp) + (z_seg/self.dp))
+            R_p = (2*self.diff*PI)/(tu*self.dp)
+            jj = np.arange(1,502)
+            a_m = (tu/(2*self.diff))*(1 - np.sqrt(1 + (R_p*R_p*jj*jj)))
+            B_m1 = np.cos((jj*PI*z_seg)/self.dp)*((1 - (z_seg/self.dp))*
+                                                  self.tm*gamma - T_seg +
+                                                  self.tm*(z_seg/self.dp))
+            B_m2 = (1/(jj*PI))*np.sin((jj*PI*z_seg)/self.dp) * \
+                (self.tm*gamma + melt_grad*self.dp - self.tm)
+            B_m3 = np.cos((jj*PI*self.dc)/self.dp)*(T_seg - (z_seg - self.dc)*
+                                                    melt_grad - (latent_h/rhoc) -
+                                                    T_c)
+            B_m4 = (1/(jj*PI))*np.sin((jj*PI*self.dc)/self.dp)* \
+                (l_adiab*self.dp - melt_grad*self.dp) + (latent_h/rhoc) + \
+                T_c - l_adiab*self.dc
+            B_m = ((2*tu*rhoc)/(jj*PI))*(B_m1 + B_m2 + B_m3 + B_m4)
+            A_m = 2/(1 + np.sqrt(1 + (R_p*R_p*jj*jj)))
+            T_homo = A_m*B_m*np.sin((self.z[:,np.newaxis]*jj*PI)/self.dp)*np.exp(a_m*x)
+            temp = (1/(tu*rhoc))*np.sum(T_homo,axis=1) + ((self.z*self.tm)/self.dp)
         return temp
     
     def get_ductile(self,temp):
@@ -180,14 +215,14 @@ class Litho(object):
             byerstr[idx] = self.byergcsh + pressure[idx]*self.byergpsh
             return byerstr
     
-    def get_yse(self, age, **kwargs):
+    def get_yse(self, age, thermal=1, **kwargs):
         '''
         Compute a yield strength envelope
         given a plate age
-        '''
+        ''' 
         dsf = self.get_depth_sflr(age)
         obp = self.get_obp(dsf)
-        temp = self.get_temperature(age)
+        temp = self.get_temperature(age,model=thermal)
         dustr = self.get_ductile(temp)
         bystrC = self.get_byerlee(obp,'c') # compression
         bystrT = self.get_byerlee(obp,'t') # tension
