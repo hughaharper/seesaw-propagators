@@ -40,7 +40,7 @@ class Litho(object):
         self.byerlpc = 2.12 # compression, byerlee coef for pressure, stress > 113.2 MPa
         self.byerlsc = 1.766e8 # compression, byerlee val for cohesion, stress > 113.2 MPa
         self.byerlpsh = 0.85 # shear, byerlee coef for pressure term, stress < 200 MPa
-        self.byergcsh = 0.5 # shear, byerlee val for cohesion, stress > 200 MPa
+        self.byergcsh = 5.0e7 # shear, byerlee val for cohesion, stress > 200 MPa
         self.byergpsh = 0.6 # shear, byerlee coef for pressure, stress > 200 MPa
         self.phyd = 0.0 # pore pressure level
         
