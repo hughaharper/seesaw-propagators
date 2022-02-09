@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import special
 
 SPMYR = 3.15576e13
 GBAR = 9.81
@@ -149,6 +150,9 @@ class Litho(object):
             A_m = 2/(1 + np.sqrt(1 + (R_p*R_p*jj*jj)))
             T_homo = A_m*B_m*np.sin((self.z[:,np.newaxis]*jj*PI)/self.dp)*np.exp(a_m*x)
             temp = (1/(tu*rhoc))*np.sum(T_homo,axis=1) + ((self.z*self.tm)/self.dp)
+        elif model == 0:
+            temp = self.ts + (self.tm - self.ts)* \
+                special.erf(self.z/(2*np.sqrt(self.diff*tage)))
         return temp
     
     def get_ductile(self,temp):
