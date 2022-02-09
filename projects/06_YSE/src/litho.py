@@ -4,6 +4,7 @@ SPMYR = 3.15576e13
 GBAR = 9.81
 PI = np.pi
 PI2 = PI**2
+RT = 8.3144621
 
 class Litho(object):
     
@@ -104,7 +105,7 @@ class Litho(object):
         tage = age*SPMYR
         jj = np.arange(1,51)
         argex = self.diff*jj*jj*PI2*tage/(self.dp**2)
-        argsin = self.z[:,np.newaxis]*jj*PI/self.dp
+        argsin = self.z[:,np.newaxis]*jj*PI/self.dp # broadcasts z and jj
         term = np.exp(-1.0*argex)*np.sin(argsin)/jj
         tsum = np.sum(term,axis=1)
         temp = self.ts + (self.tm - self.ts)*((self.z/self.dp) + (2.0*tsum/PI))
@@ -114,13 +115,43 @@ class Litho(object):
         '''
         Get vertical ductile strength profile
         '''
-        return
+        tempk = temp + 273.15
+        # Dorn Law
+        # ductstr = self.str_dor*(1-np.sqrt((tempk*RT/self.qd)*np.log(self.sren_dor/self.eps1)))
+        # Power Law
+        ductstr = ((self.eps1/self.str_pow)*np.exp(self.qp/(tempk*RT)))**(1.0/self.str_exp)
+        return ductstr
     
-    def get_byerlee(self,pressure):
+    def get_byerlee(self,pressure,regime='c'):
         '''
         Get vertical brittle strength profile
+        for a specified stress regime
         '''
-        return
+        byerstr = np.empty_like(pressure)
+        if 'c' in regime:
+            # pressure vals <= 1.132e8
+            idx = (pressure <= 1.132e8)
+            byerstr[idx] = -1.0*(pressure[idx]*self.byergpc)
+            # pressure vals > 1.132e8
+            idx = (pressure > 1.132e8)
+            byerstr[idx] = -1.0*(self.byerlsc + pressure[idx]*self.byerlpc)
+            return byerstr
+        if 't' in regime:
+            # pressure vals <= 5.299e8
+            idx = (pressure <= 5.299e8)
+            byerstr[idx] = pressure[idx]*self.byerlpt
+            # pressure vals > 5.299e8
+            idx = (pressure > 5.299e8)
+            byerstr[idx] = self.byergst + pressure[idx]*self.byergpt
+            return byerstr
+        if 's' in regime:
+            # pressure vals <= 2.0e8
+            idx = (pressure <= 2.0e8)
+            byerstr[idx] = pressure[idx]*self.byerlpsh
+            # pressure vals > 2.0e8
+            idx = (pressure > 2.0e8)
+            byerstr[idx] = self.byergcsh + pressure[idx]*self.byergpsh
+            return byerstr
     
     def get_yse(self, age, **kwargs):
         '''
@@ -131,5 +162,10 @@ class Litho(object):
         obp = self.get_obp(dsf)
         temp = self.get_temperature(age)
         dustr = self.get_ductile(temp)
-        bystr = self.get_byerlee(obp)
-        return
+        bystrC = self.get_byerlee(obp,'c') # compression
+        bystrT = self.get_byerlee(obp,'t') # tension
+        bystrS = self.get_byerlee(obp,'s') # shear
+        yseC = np.fmax(bystrC,-1*dustr)
+        yseT = np.fmin(bystrT,dustr)
+        yseS = np.fmin(bystrS,dustr)
+        return yseC, yseT, yseS
