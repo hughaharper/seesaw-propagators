@@ -50,16 +50,21 @@ class Litho(object):
         self.telas = 600 # temp at base of elastic layer
         
         # param. for ductile flow law
+        self.crust_flow = 0 # crustal flow law. 0 = dry olivine, 1 = wet olivine, 2 = diabase
         self.eps1 = 1.e-14 # strain rate
-        self.str_exp = 3.0 # stress exponent
-        self.str_pow = 7.0e-14 # stress amplitude factor for power law
+        self.str_exp = 3.5 # stress exponent
+        self.str_pow = 2.4e-16 # stress amplitude factor for power law
         self.str_dor = 8.5e9 # stress const for Dorn law
         self.sren_dor = 5.7e11 # strain rate factor for Dorn law
-        self.qp = 5.20e5 # activation energy for power law
+        self.qp = 5.40e5 # activation energy for power law
         self.qd = 5.49e5 # activation energy for Dorn law
         
         # depth-related params
         self.z = np.linspace(0,2.5e4,1000,endpoint=False) # z coordinates
+        
+        # set any kwargs
+        for key, value in kwargs.items():
+            self.__setattr__(key,value)
         return
     
     def print_vals(self):
@@ -119,13 +124,35 @@ class Litho(object):
         # Dorn Law
         # ductstr = self.str_dor*(1-np.sqrt((tempk*RT/self.qd)*np.log(self.sren_dor/self.eps1)))
         # Power Law
-        ductstr = ((self.eps1/self.str_pow)*np.exp(self.qp/(tempk*RT)))**(1.0/self.str_exp)
+        ductstr = np.empty_like(temp)
+        if self.crust_flow != 0:
+            if self.crust_flow == 1:
+                self.str_exp = 3.0
+                self.str_pow = 1.9e-15
+                self.qp = 4.2e5            
+            elif self.crust_flow == 2:
+                self.str_exp = 4.7
+                self.str_pow = 5.0e-28
+                self.qp = 4.82e5
+                
+            idx = (self.z <= self.dc)
+            ductstr[idx] = ((self.eps1/self.str_pow)*
+                            np.exp(self.qp/(tempk[idx]*RT)))**(1.0/self.str_exp)
+            self.str_exp = 3.5
+            self.str_pow = 2.4e-16
+            self.qp = 5.4e5
+            idx = (self.z > self.dc)
+            ductstr[idx] = ((self.eps1/self.str_pow)*
+                            np.exp(self.qp/(tempk[idx]*RT)))**(1.0/self.str_exp)
+        else:
+            ductstr = ((self.eps1/self.str_pow)*np.exp(self.qp/(tempk*RT)))**(1.0/self.str_exp)
         return ductstr
     
     def get_byerlee(self,pressure,regime='c'):
         '''
         Get vertical brittle strength profile
         for a specified stress regime
+        See Mueller & Phillips, 1995 appendix
         '''
         byerstr = np.empty_like(pressure)
         if 'c' in regime:
