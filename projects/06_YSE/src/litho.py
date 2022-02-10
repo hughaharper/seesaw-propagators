@@ -52,7 +52,7 @@ class Litho(object):
         
         # param. for ductile flow law
         self.crust_flow = 0 # crustal flow law. 0 = dry olivine, 1 = wet olivine, 2 = diabase
-        self.eps1 = 1.e-14 # strain rate
+        self.eps1 = 1.0e-14 # strain rate
         self.str_exp = 3.5 # stress exponent
         self.str_pow = 2.4e-16 # stress amplitude factor for power law
         self.str_dor = 8.5e9 # stress const for Dorn law
@@ -73,13 +73,25 @@ class Litho(object):
         '''
         Print litho parameter values
         '''
-        print("Litho params: \n")
+        print("Crustal Thickness:   {} km".format(self.dc*1e-3))
+        if self.crust_flow == 0:
+            print("Crustal Flow Law:    Dry Olivine")
+        elif self.crust_flow == 1:
+            print("Crustal Flow Law:    Wet Olivine")
+        elif self.crust_flow == 2:
+            print("Crustal Flow Law:    Diabase")
+        print("Full Spreading Rate: {} cm/yr".format(self.usp*100))
+        print("Plate Thickness:     {} km".format(self.dp*1e-3))
+        print("Ridge Axis Depth:    {} km".format(self.dref*1e-3))
         return
     
     def get_depth_sflr(self, age):
         '''
         Compute seafloor depth given a plate age
         See T&S (3rd ed.) eq 4.211
+        Note: This uses Plate cooling regardless of what
+        one specifies in get_temperature, but it shouldn't
+        make much of a difference.
         '''
         tage = age*SPMYR
         pref = self.rm * self.alph * self.dp \
@@ -98,7 +110,7 @@ class Litho(object):
         depth of the seafloor
         '''
         # water column overburden
-        pw = dsflr*self.rw*GBAR
+        pw = 0 #dsflr*self.rw*GBAR
         press = (self.z*self.rc*GBAR) - \
             (self.phyd*self.rw*GBAR)*(self.z + dsflr)
         return pw + press
